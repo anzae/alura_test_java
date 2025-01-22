@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 // add date validator
+import java.time.LocalDateTime;
 import jakarta.validation.constraints.FutureOrPresent;
 // add entity
 import jakarta.persistence.Entity;
@@ -46,7 +47,7 @@ public class NewCourseDTO {
 
     // date
     @FutureOrPresent
-    private LocalDate inactivationDate;
+    private LocalDateTime inactivationDate;
 
     // constructor
     public NewCourseDTO(String name, String code, String description, String instructorEmail) {
@@ -103,11 +104,11 @@ public class NewCourseDTO {
         this.status = status;
     }
 
-    public LocalDate getInactivationDate() {
+    public LocalDateTime getInactivationDate() {
         return inactivationDate;
     }
 
-    public void setInactivationDate(LocalDate inactivationDate) {
+    public void setInactivationDate(LocalDateTime inactivationDate) {
         this.inactivationDate = inactivationDate;
     }
 

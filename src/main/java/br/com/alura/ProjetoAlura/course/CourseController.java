@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+// date import
+import java.time.LocalDateTime;
+
 @RestController
 public class CourseController {
 
@@ -40,7 +43,14 @@ public class CourseController {
 
     @PostMapping("/course/{code}/inactive")
     public ResponseEntity createCourse(@PathVariable("code") String courseCode) {
-        // TODO: Implementar a Questão 2 - Inativação de Curso aqui...
+
+        // question 2
+        Course course = courseRepository.findByCode(courseCode)
+                .orElseThrow(() -> new IllegalArgumentException("Course not found."));
+
+        course.setStatus(Status.INACTIVE);
+        course.setInactivationDate(LocalDateTime.now());
+        courseRepository.save(course);
 
         return ResponseEntity.ok().build();
     }
