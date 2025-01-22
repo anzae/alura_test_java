@@ -16,7 +16,18 @@ public class RegistrationController {
 
     @PostMapping("/registration/new")
     public ResponseEntity createCourse(@Valid @RequestBody NewRegistrationDTO newRegistration) {
-        // TODO: Implementar a Questão 3 - Criação de Matrículas aqui...
+
+        // question 3
+        Course course = courseRepository.findByCode(newRegistration.getCourseCode())
+            .orElseThrow(() -> new IllegalArgumentException("Course not found."));
+    
+        if (course.getStatus() != Status.ACTIVE) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorItemDTO("course", "Course not active."));
+        }
+
+        Registration registration = new Registration(user, course, LocalDateTime.now());
+            registrationRepository.save(registration);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
