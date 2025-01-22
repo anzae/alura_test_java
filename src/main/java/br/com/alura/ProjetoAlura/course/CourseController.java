@@ -32,7 +32,7 @@ public class CourseController {
     }
 
     @PostMapping("/course/new")
-    public ResponseEntity createCourse(@Valid @RequestBody NewCourseDTO newCourse) {
+    public ResponseEntity createCourse(@Valid @RequestBody Course newCourse) {
         
         // question 1
 
@@ -53,7 +53,7 @@ public class CourseController {
                     .body(new ErrorItemDTO("instructorEmail", "Email not valid."));
         }
 
-        Course course = new NewCourseDTO(
+        Course course = new Course(
             newCourse.getName(),
             newCourse.getCode(),
             newCourse.getDescription(),

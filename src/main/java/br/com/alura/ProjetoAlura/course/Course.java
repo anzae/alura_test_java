@@ -1,52 +1,36 @@
-package br.com.alura.ProjetoAlura.course;
+package br.com.alura.ProjetoAlura.user;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-// add enumerator validator
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-// add date validator
+import br.com.alura.ProjetoAlura.util.EncryptUtil;
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
-import jakarta.validation.constraints.FutureOrPresent;  
 
-import org.hibernate.validator.constraints.Length;
+@Entity
+public class Course {
 
-public class NewCourseDTO {
-
-    @NotNull
-    @NotBlank
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
     private String name;
-
-    @NotNull
-    @NotBlank
-    @Length(min = 4, max = 10)
     private String code;
-
     private String description;
-
-    @NotNull
-    @NotBlank
-    @Email
     private String instructorEmail;
-
-    // status
+    
     @Enumerated(EnumType.STRING)
     private Status status;
-
-    // date
-    @FutureOrPresent
+    
     private LocalDateTime inactivationDate;
 
-    // constructor
-    public NewCourseDTO(String name, String code, String description, String instructorEmail) {
+    public Course(String name, String code, String description, String instructorEmail) {
         this.name = name;
         this.code = code;
         this.description = description;
         this.instructorEmail = instructorEmail;
-        this.status = Status.ACTIVE;
+        this.status = Status.ACTIVE; 
     }
 
+    // getters and setters
     public String getName() {
         return name;
     }
@@ -79,7 +63,6 @@ public class NewCourseDTO {
         this.instructorEmail = instructorEmail;
     }
 
-    // getters and setters
     public Status getStatus() {
         return status;
     }
@@ -94,14 +77,5 @@ public class NewCourseDTO {
 
     public void setInactivationDate(LocalDateTime inactivationDate) {
         this.inactivationDate = inactivationDate;
-    }
-
-    public Course toModel() {
-        return new Course(
-            this.name, 
-            this.code, 
-            this.description, 
-            this.instructorEmail
-        );
     }
 }
