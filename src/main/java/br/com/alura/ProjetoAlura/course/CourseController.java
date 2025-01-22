@@ -11,9 +11,29 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class CourseController {
 
+    // db for course
+    private final CourseRepository courseRepository;
+
+    public CourseController(CourseRepository courseRepository) {
+        this.courseRepository = courseRepository;
+    }
+
     @PostMapping("/course/new")
     public ResponseEntity createCourse(@Valid @RequestBody NewCourseDTO newCourse) {
-        // TODO: Implementar a Questão 1 - Cadastro de Cursos aqui...
+        
+        // question 1
+        if (courseRepository.existsByCode(newCourse.getCode())) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorItemDTO("code", "Course code already exists."));
+        }
+
+        Course course = new NewCourseDTO(
+            newCourse.getName(),
+            newCourse.getCode(),
+            newCourse.getDescription(),
+            newCourse.getInstructorEmail(),
+        );
+        courseRepository.save(course);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
