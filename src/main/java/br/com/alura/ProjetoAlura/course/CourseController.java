@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 // date import
 import java.time.LocalDateTime;
 
+// regex import
+import java.util.regex.Pattern;
+
 @RestController
 public class CourseController {
 
@@ -21,13 +24,33 @@ public class CourseController {
         this.courseRepository = courseRepository;
     }
 
+    // db for user
+    private final UserRepository userRepository;
+
+    public UserController(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
     @PostMapping("/course/new")
     public ResponseEntity createCourse(@Valid @RequestBody NewCourseDTO newCourse) {
         
         // question 1
-        if (courseRepository.existsByCode(newCourse.getCode())) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new ErrorItemDTO("code", "Course code already exists."));
+
+        // code validator
+        String regex = "^[a-zA-Z]+(-[a-zA-Z]+)*$";
+
+        if (!Pattern.matches(regex, newCourse.getCode())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorItemDTO("code", "Invalid course code format."));
+        }
+
+        // instructor email validation
+        User user = userRepository.findByEmail(newCourse.getInstructorEmail())
+                .orElseThrow(() -> new IllegalArgumentException("Instructor email not found."));
+
+        if (!user.getRole().equals("INSTRUCTOR")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorItemDTO("instructorEmail", "Email not valid."));
         }
 
         Course course = new NewCourseDTO(

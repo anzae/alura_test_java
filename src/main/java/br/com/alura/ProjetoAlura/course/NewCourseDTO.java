@@ -24,8 +24,6 @@ public class NewCourseDTO {
     @NotNull
     @NotBlank
     @Length(min = 4, max = 10)
-    // regex pattern
-    @Pattern(regexp = "^[a-zA-Z]+(-[a-zA-Z]+)*$")
     private String code;
 
     private String description;
@@ -34,12 +32,6 @@ public class NewCourseDTO {
     @NotBlank
     @Email
     private String instructorEmail;
-
-    /* 
-    Note: In a real application, this information should come from User database 
-    at the moment of creation, to verify if user with given email is instructor.
-    */
-    private String userRole;
 
     // status
     @Enumerated(EnumType.STRING)
@@ -56,11 +48,6 @@ public class NewCourseDTO {
         this.description = description;
         this.instructorEmail = instructorEmail;
         this.status = "ACTIVE";
-
-        // user role validation
-        if (!isInstructorEmailValid()) {
-            throw new IllegalArgumentException("User email is not valid.");
-        }
     }
 
     public String getName() {
@@ -110,10 +97,5 @@ public class NewCourseDTO {
 
     public void setInactivationDate(LocalDateTime inactivationDate) {
         this.inactivationDate = inactivationDate;
-    }
-
-    // instructor validation
-    public boolean isInstructorEmailValid() {
-        return "INSTRUCTOR".equals(userRole);
     }
 }
