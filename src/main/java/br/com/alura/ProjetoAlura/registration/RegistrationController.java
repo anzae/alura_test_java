@@ -26,7 +26,7 @@ public class RegistrationController {
                     .body(new ErrorItemDTO("course", "Course not active."));
         }
 
-        Registration registration = new Registration(user, course, LocalDateTime.now());
+        Registration registration = new Registration(newRegistration.getCourseCode(), newRegistration.getStudentEmail());
             registrationRepository.save(registration);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -36,32 +36,25 @@ public class RegistrationController {
     public ResponseEntity<List<RegistrationReportItem>> report() {
         List<RegistrationReportItem> items = new ArrayList<>();
 
-        // TODO: Implementar a Questão 4 - Relatório de Cursos Mais Acessados aqui...
+        // question 4
+        List<Object[]> result = registrationRepository.countRegistrationsByCourse();
+        for (Object[] obj : result) {
+            String courseName = (String) obj[0];
+            String courseCode = (String) obj[1];
+            String instructorName = (String) obj[2];
+            String instructorEmail = (String) obj[3];
+            Long totalRegistrations = (Long) obj[4];
 
-        // Dados fictícios abaixo que devem ser substituídos
-        items.add(new RegistrationReportItem(
-                "Java para Iniciantes",
-                "java",
-                "Charles",
-                "charles@alura.com.br",
-                10L
-        ));
+            RegistrationReportItem reportItem = new RegistrationReportItem(
+                courseName,
+                courseCode,
+                instructorName,
+                instructorEmail,
+                totalRegistrations
+            );
 
-        items.add(new RegistrationReportItem(
-                "Spring para Iniciantes",
-                "spring",
-                "Charles",
-                "charles@alura.com.br",
-                9L
-        ));
-
-        items.add(new RegistrationReportItem(
-                "Maven para Avançados",
-                "maven",
-                "Charles",
-                "charles@alura.com.br",
-                9L
-        ));
+            items.add(reportItem);
+        }
 
         return ResponseEntity.ok(items);
     }
